@@ -1,0 +1,191 @@
+cook_book = {}
+deps = {}
+with open ('file1.txt', 'rt', encoding='utf8') as file:
+    for l in file:
+        food = l.strip()
+        dep = {food:[]}
+        ingredient_count = file.readline()
+        for i in range(int(ingredient_count)):
+            ingredient = file.readline()
+            ingredient_name, quantity, measure = ingredient.strip().split('|')
+            dep[food].append({'ingredient_name': ingredient_name,
+                                     'quantity': quantity,
+                                     'measure': measure })
+        blank_line = file.readline()
+        deps.update(dep)
+
+print(f'cook_book = {deps}')
+person_count = int(input("Укажите количество персон: "))
+dishes = []
+print("Выберите блюдо из имеющихся в меню:\n"
+      "Имеется в меню:\n"
+      "Омлет\n "
+      "Утка по-пекински;\n "
+      "Запеченный картофель \n "
+      "Фахитос \n ")
+dishes_1 = int(input("Если выбрали 'Омлет', нажмите 1, если нет 0: "))
+dishes_2 = int(input("Если выбрали 'Утка по-пекински', нажмите 1, если нет 0: "))
+dishes_3 = int(input("Если выбрали 'Запеченный картофель', нажмите 1, если нет 0: "))
+dishes_4 = int(input("Если выбрали 'Фахитос', нажмите 1, если нет 0: "))
+def dishes_book():
+    global dishes
+    dishes = []
+    if dishes_1 == 1:
+        dishes_new = 'Омлет'
+        dishes.append(dishes_new)
+    else:
+        print("Вы не выбрали это блюдо или указали иную цифру при выборе")
+
+    if dishes_2 == 1:
+        dishes_new = 'Утка по-пекински'
+        dishes.append(dishes_new)
+    else:
+        print("Вы не выбрали это блюдо или указали иную цифру при выборе")
+
+    if dishes_3 == 1:
+        dishes_new = 'Запеченный картофель'
+        dishes.append(dishes_new)
+    else:
+        print("Вы не выбрали это блюдо или указали иную цифру при выборе")
+
+    if dishes_4 == 1:
+        dishes_new = 'Фахитос'
+        dishes.append(dishes_new)
+    else:
+        print("Вы не выбрали это блюдо или указали иную цифру при выборе")
+    return
+dishes_book()
+print("="*100)
+print(f'Вы выбрали: {dishes}')
+print(f'Количество человек: {person_count}')
+
+def get_shop_list_by_dishes (dishes, person_count):
+    def get_shop_list_by_dishes_1 ():
+        a = []
+        quantity_new_1 = 0
+        ingredient_name_new = []
+        list_new = {}
+        list_new_1 = []
+        list_new_2 = []
+        list_1 = []
+        MyList = []
+        list_products = []
+        list_dishes = []
+        for dish in dishes:
+            for key, values in deps.items():
+                if key == dish:
+                    list_dish = values
+                    for num in list_dish:
+                        for key, values in num.items():
+                            if key == 'ingredient_name':
+                                ingredient_name_new = values
+                            if key == 'quantity':
+                                quantity_new = int(values) * person_count
+                            if key == 'measure':
+                                measure_new = values
+                        list_new = ({'ingredient_name': ingredient_name_new,'measure': measure_new,'quantity': quantity_new})
+                        list_new_1.append(list_new) #полный список продуктов
+                        MyList.append(ingredient_name_new) #список только название продуктов
+        list_dishes = MyList #список только название продуктов
+        list_products = list_new_1
+        return(list_products,list_dishes)
+
+    get_shop_list_by_dishes_1()
+    list_dishes, list_products = get_shop_list_by_dishes_1()
+    list_sort = list(set(n for n in list_products if list_products.count(n) > 1))
+
+    def get_shop_list_by_dishes_2():# выбираем из общего списка и создаем список с одинаковыми продуктами
+        quantity_new = 0
+        list_new_1 = {}
+        list_2 = []
+        a = 0
+        quantity_new_1 = 0
+        quantity_new_2 = 0
+        list_sort_2 = []
+        for i in list_sort:
+            product = i
+            list_sort_2=[]
+            for list in list_dishes:
+                for key, values in list.items():
+                    if key == 'ingredient_name' and values == product:
+                        list_new_1 = list
+                        list_sort_2.append(list_new_1)
+        return(list_sort_2)
+    list_sort_2 = get_shop_list_by_dishes_2()
+
+    def get_shop_list_by_dishes_3(): # суммируем значения  одинаковых продуктов в списках и создаем словарь
+        list_new_3 = {}
+        list_2 = {}
+        list_new_4 = []
+        quantity_new_4 = 0
+        measure_new = 0
+        quantity_new_2 = 0
+        quantity_new_1 = 0
+        ingredient_name_new = 0
+        a = 0
+        b = 0
+        ingredient_name_new_1 = 0
+        s = 0
+        quantity_1 = 0
+        for i in list_sort:
+            product = i
+            limitation = product
+            quantity_new_2 = 0
+            ingredient_name_new_1 = i
+            for i in list_sort_2:
+                list_1 = i
+                for key, values in i.items():
+                    if values == product and limitation == product:
+                        d = values
+                        for key, values in list_1.items():
+                            if key == 'quantity' and d == product:
+                                quantity = values
+                                quantity_1 += quantity
+                        quantity_new = quantity_1
+                        for key, values in list_1.items():
+                            if key == 'quantity':
+                                quantity_new_4 = values
+                            if key == 'measure':
+                                measure_new = values
+                            if key == 'ingredient_name':
+                                ingredient_name_new = values
+                        list_new_3 = ({'ingredient_name': ingredient_name_new, 'measure': measure_new, 'quantity': quantity_new})
+            s = 0
+            quantity_new = 0
+            limitation = 0
+            list_new_4.append(list_new_3)
+#
+        return(list_new_4)
+    list_new_4 = get_shop_list_by_dishes_3()
+
+    def get_shop_list_new_4(): # суммируем списки значений продуктов в которых несколько продуктов :  в нашем случае 'помидор' и списки с одинарными продуктами
+        general_list = []
+        for number in list_dishes:
+            if number in list_sort_2:
+                general_list.append(number)
+        for number in general_list:
+            list_dishes.remove(number)
+        list_products_new = list_dishes+list_new_4
+        return(list_products_new)
+
+    list_products_new = get_shop_list_new_4()
+
+    list_all = {}
+    list_new_all = {}
+
+    for i in list_products_new: # преобразование значений в вид в соответствии с заданием
+        for key, values in i.items():
+            if key == 'ingredient_name':
+                ingredient_new = values
+            if key == 'measure':
+                measure_new = values
+            if key == 'quantity':
+                quantity_new = values
+        list_all[ingredient_new] = ({'measure': measure_new, 'quantity': quantity_new})
+        list_new_all.update(list_all)
+    print("="*50)
+    print(f'Необходимые продукты: {list_new_all}')
+#
+    return
+
+get_shop_list_by_dishes (dishes, person_count)
